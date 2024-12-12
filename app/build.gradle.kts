@@ -1,12 +1,19 @@
+import org.jetbrains.kotlin.konan.properties.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.20"
 }
 
 android {
     namespace = "com.example.nearby"
     compileSdk = 35
+
+    val properties = Properties().apply {
+        load(rootProject.file("local.properties").inputStream())
+    }
 
     defaultConfig {
         applicationId = "com.example.nearby"
@@ -14,8 +21,8 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders["API_KEY"] = properties.getProperty("API_KEY")
     }
 
     buildTypes {
@@ -40,7 +47,10 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.navigation.compose)
+    implementation(libs.coil.compose)
+    implementation(libs.kotlin.serialization)
+    implementation(libs.maps.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
